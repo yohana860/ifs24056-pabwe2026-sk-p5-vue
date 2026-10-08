@@ -30,12 +30,12 @@ async function submit() {
       <div>
         <label for="login-email-input" data-testid="login-email-label" class="mb-1 block text-sm font-semibold">Email</label>
         <input id="login-email-input" data-testid="login-email-input" v-model="form.email" name="email" type="email"
-          autocomplete="email" class="w-full rounded-xl border p-3" placeholder="Email" />
+          autocomplete="email" class="w-full rounded-xl border p-3" placeholder="Email" required />
       </div>
       <div>
         <label for="login-password-input" data-testid="login-password-label" class="mb-1 block text-sm font-semibold">Password</label>
         <input id="login-password-input" data-testid="login-password-input" v-model="form.password" name="password"
-          type="password" autocomplete="current-password" class="w-full rounded-xl border p-3" placeholder="Password" />
+          type="password" autocomplete="current-password" class="w-full rounded-xl border p-3" placeholder="Password" required />
       </div>
       <button id="login-submit-button" data-testid="login-submit-button" type="submit"
         class="w-full rounded-xl bg-slate-900 p-3 font-semibold text-white disabled:opacity-50" :disabled="auth.isAuthLogin">

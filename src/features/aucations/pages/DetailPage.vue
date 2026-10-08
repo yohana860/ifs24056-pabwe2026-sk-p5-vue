@@ -48,17 +48,17 @@ async function bid() {
 
 <template>
   <div class="bg-slate-50">
-    <header class="border-b bg-white p-5">
+    <section class="border-b bg-white p-5" aria-label="Navigasi detail lelang">
       <div class="mx-auto max-w-5xl">
-        <button @click="router.back()" class="font-semibold">← Kembali</button>
+        <button type="button" @click="router.back()" class="font-semibold" aria-label="Kembali ke daftar lelang">← Kembali</button>
       </div>
-    </header>
+    </section>
 
     <main v-if="store.aucation" class="mx-auto max-w-5xl p-6">
       <article class="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-200">
         <div class="aspect-video bg-slate-100">
-          <img v-if="store.aucation.cover" :src="mediaUrl(store.aucation.cover)" :alt="store.aucation.title" class="h-full w-full object-cover" />
-          <div v-else class="flex h-full items-center justify-center text-slate-400">No Cover</div>
+          <img v-if="store.aucation.cover" :src="mediaUrl(store.aucation.cover)" :alt="`Foto ${store.aucation.title}`" width="1280" height="720" loading="eager" fetchpriority="high" decoding="async" class="h-full w-full object-cover" />
+          <div v-else class="flex h-full items-center justify-center text-slate-600">No Cover</div>
         </div>
 
         <div class="p-7">

@@ -221,12 +221,12 @@ onMounted(async () => {
 <template>
   <div class="bg-slate-50">
     <!-- Header -->
-    <header class="border-b bg-white">
+    <section class="border-b bg-white" aria-labelledby="auction-page-title">
       <div
         class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5"
       >
         <div>
-          <h1 class="text-2xl font-bold text-slate-900">
+          <h1 id="auction-page-title" class="text-2xl font-bold text-slate-900">
             Delcom Auction
           </h1>
 
@@ -246,15 +246,20 @@ onMounted(async () => {
           </button>
         </div>
       </div>
-    </header>
+    </section>
 
     <!-- Content -->
     <main class="mx-auto max-w-7xl px-6 py-8">
       <!-- Search -->
       <div class="mb-6">
+        <label for="auction-search" class="sr-only">Cari lelang berdasarkan judul atau deskripsi</label>
         <input
+          id="auction-search"
           v-model="search"
           type="search"
+          name="search"
+          autocomplete="off"
+          aria-label="Cari lelang berdasarkan judul atau deskripsi"
           placeholder="Cari judul atau deskripsi lelang..."
           class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none focus:border-slate-500"
         />
@@ -359,13 +364,18 @@ onMounted(async () => {
             <img
               v-if="aucation.cover"
               :src="mediaUrl(aucation.cover)"
-              :alt="aucation.title"
+              :alt="`Foto ${aucation.title}`"
+              width="640"
+              height="360"
+              :loading="filteredAucations.indexOf(aucation) === 0 ? 'eager' : 'lazy'"
+              :fetchpriority="filteredAucations.indexOf(aucation) === 0 ? 'high' : 'auto'"
+              decoding="async"
               class="h-full w-full object-cover"
             />
 
             <div
               v-else
-              class="flex h-full items-center justify-center text-slate-400"
+              class="flex h-full items-center justify-center text-slate-600"
             >
               Tidak ada gambar
             </div>
@@ -451,14 +461,18 @@ onMounted(async () => {
     <div
       v-if="showAddModal"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      role="presentation"
       @click.self="closeAddModal"
     >
       <div
         class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-auction-title"
       >
         <div class="flex items-center justify-between">
           <div>
-            <h2 class="text-2xl font-bold">
+            <h2 id="add-auction-title" class="text-2xl font-bold">
               Tambah Lelang
             </h2>
 
@@ -469,7 +483,8 @@ onMounted(async () => {
 
           <button
             type="button"
-            class="text-2xl text-slate-400"
+            class="text-2xl text-slate-600"
+            aria-label="Tutup dialog tambah lelang"
             :disabled="submitting"
             @click="closeAddModal"
           >
@@ -482,25 +497,30 @@ onMounted(async () => {
           @submit.prevent="submitAucation"
         >
           <div>
-            <label class="mb-1 block text-sm font-semibold">
+            <label for="auction-title" class="mb-1 block text-sm font-semibold">
               Judul
             </label>
 
             <input
+              id="auction-title"
               v-model="form.title"
               type="text"
+              name="title"
+              autocomplete="off"
               placeholder="Contoh: Laptop Gaming ASUS"
               class="w-full rounded-xl border border-slate-300 p-3"
             />
           </div>
 
           <div>
-            <label class="mb-1 block text-sm font-semibold">
+            <label for="auction-description" class="mb-1 block text-sm font-semibold">
               Deskripsi
             </label>
 
             <textarea
+              id="auction-description"
               v-model="form.description"
+              name="description"
               rows="4"
               placeholder="Jelaskan kondisi dan detail barang..."
               class="w-full rounded-xl border border-slate-300 p-3"
@@ -508,13 +528,15 @@ onMounted(async () => {
           </div>
 
           <div>
-            <label class="mb-1 block text-sm font-semibold">
+            <label for="auction-start-bid" class="mb-1 block text-sm font-semibold">
               Harga Awal
             </label>
 
             <input
+              id="auction-start-bid"
               v-model="form.start_bid"
               type="number"
+              name="start_bid"
               min="1"
               placeholder="1000000"
               class="w-full rounded-xl border border-slate-300 p-3"
@@ -522,24 +544,28 @@ onMounted(async () => {
           </div>
 
           <div>
-            <label class="mb-1 block text-sm font-semibold">
+            <label for="auction-closed-at" class="mb-1 block text-sm font-semibold">
               Batas Waktu
             </label>
 
             <input
+              id="auction-closed-at"
               v-model="form.closed_at"
               type="datetime-local"
+              name="closed_at"
               class="w-full rounded-xl border border-slate-300 p-3"
             />
           </div>
 
           <div>
-            <label class="mb-1 block text-sm font-semibold">
+            <label for="auction-cover" class="mb-1 block text-sm font-semibold">
               Cover Barang
             </label>
 
             <input
+              id="auction-cover"
               type="file"
+              name="cover"
               accept="image/*"
               class="w-full rounded-xl border border-slate-300 p-3"
               @change="handleCover"

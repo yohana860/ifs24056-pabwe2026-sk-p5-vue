@@ -35,7 +35,11 @@ onMounted(async () => {
             <img
               v-if="user.photo"
               :src="user.photo"
-              :alt="user.name || 'Pengguna'"
+              :alt="`Foto ${user.name || 'Pengguna'}`"
+              width="56"
+              height="56"
+              loading="lazy"
+              decoding="async"
               class="h-14 w-14 rounded-full object-cover"
             />
             <div v-else class="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-xl font-bold">

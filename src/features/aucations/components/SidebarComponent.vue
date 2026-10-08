@@ -15,7 +15,7 @@ const items = [
     class="fixed inset-y-0 left-0 z-40 w-64 border-r bg-white p-4 pt-20 transition-transform md:static md:z-auto md:translate-x-0 md:pt-4"
     :class="open ? 'translate-x-0' : '-translate-x-full'"
   >
-    <nav class="space-y-1">
+    <nav class="space-y-1" aria-label="Navigasi utama">
       <RouterLink
         v-for="item in items"
         :key="item.to"

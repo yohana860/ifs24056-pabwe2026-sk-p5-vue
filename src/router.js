@@ -16,69 +16,47 @@ import { getAccessToken } from "./helpers/apiHelper";
 
 const router = createRouter({
   history: createWebHistory(),
-
   routes: [
     {
       path: "/auth",
       component: AuthLayout,
-      meta: {
-        guestOnly: true,
-      },
+      meta: { guestOnly: true },
       children: [
-        {
-          path: "login",
-          component: LoginPage,
-        },
-        {
-          path: "register",
-          component: RegisterPage,
-        },
+        { path: "login", component: LoginPage },
+        { path: "register", component: RegisterPage },
       ],
     },
-
-    // HOME
     {
       path: "/",
       component: AucationLayout,
       children: [
-        {
-          path: "",
-          component: HomePage,
-        },
-        {
-          path: "aucations/:aucationId",
-          component: DetailPage,
-        },
-        {
-          path: "users",
-          component: UsersPage,
-        },
-        {
-          path: "profile",
-          component: ProfilePage,
-        },
+        { path: "", component: HomePage },
+        { path: "aucations/:aucationId", component: DetailPage },
+        { path: "users", component: UsersPage },
+        { path: "profile", component: ProfilePage },
       ],
     },
-
-    {
-      path: "/:pathMatch(.*)*",
-      component: NotFoundPage,
-    },
+    { path: "/:pathMatch(.*)*", component: NotFoundPage },
   ],
 });
 
 router.beforeEach((to) => {
   const token = getAccessToken();
-
-  if (to.matched.some((r) => r.meta.guestOnly) && token) {
-    return "/";
-  }
-
-  if (to.matched.some((r) => r.meta.requiresAuth) && !token) {
-    return "/auth/login";
-  }
-
+  if (to.matched.some((r) => r.meta.guestOnly) && token) return "/";
+  if (to.matched.some((r) => r.meta.requiresAuth) && !token) return "/auth/login";
   return true;
+});
+
+router.afterEach((to) => {
+  const titles = {
+    "/": "Delcom Auction — Platform Lelang Online",
+    "/auth/login": "Masuk — Delcom Auction",
+    "/auth/register": "Daftar — Delcom Auction",
+    "/users": "Pengguna — Delcom Auction",
+    "/profile": "Profil Saya — Delcom Auction",
+  };
+
+  document.title = titles[to.path] || "Delcom Auction — Platform Lelang Online";
 });
 
 export default router;

@@ -31,17 +31,17 @@ async function submit() {
       <div>
         <label for="register-name-input" class="mb-1 block text-sm font-semibold">Nama</label>
         <input id="register-name-input" data-testid="register-name-input" v-model="form.name" name="name"
-          autocomplete="name" class="w-full rounded-xl border p-3" placeholder="Nama" />
+          autocomplete="name" class="w-full rounded-xl border p-3" placeholder="Nama" required />
       </div>
       <div>
         <label for="register-email-input" class="mb-1 block text-sm font-semibold">Email</label>
         <input id="register-email-input" data-testid="register-email-input" v-model="form.email" name="email" type="email"
-          autocomplete="email" class="w-full rounded-xl border p-3" placeholder="Email" />
+          autocomplete="email" class="w-full rounded-xl border p-3" placeholder="Email" required />
       </div>
       <div>
         <label for="register-password-input" class="mb-1 block text-sm font-semibold">Password</label>
         <input id="register-password-input" data-testid="register-password-input" v-model="form.password" name="password"
-          type="password" autocomplete="new-password" class="w-full rounded-xl border p-3" placeholder="Password" />
+          type="password" autocomplete="new-password" class="w-full rounded-xl border p-3" placeholder="Password" required />
       </div>
       <button id="register-submit-button" data-testid="register-submit-button" type="submit"
         class="w-full rounded-xl bg-slate-900 p-3 font-semibold text-white disabled:opacity-50" :disabled="auth.isAuthRegister">
