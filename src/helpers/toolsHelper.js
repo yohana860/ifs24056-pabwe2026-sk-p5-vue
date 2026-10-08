@@ -34,3 +34,7 @@ export function showErrorDialog(message) {
 export function showSuccessDialog(message) {
   alert(message || "Berhasil.");
 }
+
+export function showConfirmDialog(message) {
+  return window.confirm(message || "Apakah Anda yakin?");
+}
