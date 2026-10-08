@@ -1,28 +1,27 @@
-let swalPromise;
+export const showSuccessDialog = async (title, text = "") => {
+  const Swal = (await import("sweetalert2")).default;
 
-const getSwal = () => {
-  if (!swalPromise) {
-    swalPromise = import("sweetalert2").then((module) => module.default);
-  }
-  return swalPromise;
+  return Swal.fire({
+    icon: "success",
+    title,
+    text,
+  });
 };
 
-export const showSuccessDialog = (title = "Berhasil", text = "") =>
-  getSwal().then((Swal) =>
-    Swal.fire({ icon: "success", title, text }),
-  );
+export const showErrorDialog = async (title, text = "") => {
+  const Swal = (await import("sweetalert2")).default;
 
-export const showErrorDialog = (title = "Gagal", text = "") =>
-  getSwal().then((Swal) =>
-    Swal.fire({ icon: "error", title, text }),
-  );
+  return Swal.fire({
+    icon: "error",
+    title,
+    text,
+  });
+};
 
-export const showConfirmDialog = async (
-  title = "Konfirmasi",
-  text = "",
-) => {
-  const Swal = await getSwal();
-  const result = await Swal.fire({
+export const showConfirmDialog = async (title, text = "") => {
+  const Swal = (await import("sweetalert2")).default;
+
+  return Swal.fire({
     icon: "warning",
     title,
     text,
@@ -30,20 +29,4 @@ export const showConfirmDialog = async (
     confirmButtonText: "Ya",
     cancelButtonText: "Batal",
   });
-  return result.isConfirmed;
 };
-
-export const formatRupiah = (value) =>
-  new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(Number(value) || 0);
-
-export const formatDate = (value) =>
-  value
-    ? new Intl.DateTimeFormat("id-ID", {
-        dateStyle: "medium",
-        timeStyle: "short",
-      }).format(new Date(value))
-    : "-";
