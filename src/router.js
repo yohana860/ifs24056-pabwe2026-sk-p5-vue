@@ -36,12 +36,10 @@ const router = createRouter({
       ],
     },
 
+    // HOME
     {
       path: "/",
       component: AucationLayout,
-      meta: {
-        requiresAuth: true,
-      },
       children: [
         {
           path: "",
