@@ -1,0 +1,3 @@
+import { render } from "@testing-library/vue"; import { createPinia } from "pinia"; import { createRouter, createMemoryHistory } from "vue-router";
+export function renderWithProviders(component, options={}) { const pinia=createPinia(); const router=createRouter({history:createMemoryHistory(),routes:[]}); return render(component,{global:{plugins:[pinia,router]},...options}); }
+export function createMockPinia(){return createPinia();}

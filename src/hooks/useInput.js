@@ -1,0 +1,1 @@
+import { ref } from "vue"; export function useInput(initial=""){const value=ref(initial); const onInput=e=>value.value=e.target.value; return {value,onInput};}
