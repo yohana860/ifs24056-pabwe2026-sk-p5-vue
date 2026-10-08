@@ -1,59 +1,58 @@
 import { defineStore } from "pinia";
 import * as api from "../api/userApi";
 
+function unwrapUsers(response) {
+  return response?.data?.users || response?.users || [];
+}
+
+function unwrapProfile(response) {
+  return response?.data?.user || response?.data?.profile || response?.user || response?.profile || response?.data || response || null;
+}
+
 export const useUsersStore = defineStore("users", {
   state: () => ({
     users: [],
     profile: null,
     loading: false,
+    profileLoading: false,
+    error: "",
   }),
 
   actions: {
     async fetchUsers() {
       this.loading = true;
-
+      this.error = "";
       try {
         const response = await api.getUsers();
-
-        this.users =
-          response.data?.users ||
-          response.users ||
-          [];
-
-        return response;
+        this.users = unwrapUsers(response);
+        return this.users;
+      } catch (error) {
+        this.error = error.message;
+        throw error;
       } finally {
         this.loading = false;
       }
     },
 
     async fetchProfile() {
-      this.loading = true;
-
+      this.profileLoading = true;
+      this.error = "";
       try {
         const response = await api.getMe();
-
-        this.profile =
-          response.data?.user ||
-          response.data ||
-          response.user ||
-          response;
-
-        return response;
+        this.profile = unwrapProfile(response);
+        return this.profile;
+      } catch (error) {
+        this.error = error.message;
+        throw error;
       } finally {
-        this.loading = false;
+        this.profileLoading = false;
       }
     },
 
     async updateProfile(data) {
-      return api.updateMe(data);
-    },
-
-    async uploadPhoto(file) {
-      return api.uploadPhoto(file);
-    },
-
-    async changePassword(data) {
-      return api.changePassword(data);
+      const response = await api.updateMe(data);
+      await this.fetchProfile();
+      return response;
     },
   },
 });

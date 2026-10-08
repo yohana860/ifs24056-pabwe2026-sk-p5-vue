@@ -1,1 +1,7 @@
-import { apiFetch } from "../../../helpers/apiHelper"; export const getUsers=()=>apiFetch("/users"); export const getMe=()=>apiFetch("/users/me"); export const updateMe=(data)=>apiFetch("/users/me",{method:"PUT",body:data}); export const uploadPhoto=(body)=>apiFetch("/users/me/photo",{method:"POST",body}); export const changePassword=(data)=>apiFetch("/users/me/password",{method:"PUT",body:data});
+import { apiFetch } from "../../../helpers/apiHelper";
+
+export const getUsers = () => apiFetch("/users");
+export const getMe = () => apiFetch("/users/me");
+export const updateMe = (data) => apiFetch("/users/me", { method: "PUT", body: data });
+export const uploadPhoto = (body) => apiFetch("/users/me/photo", { method: "POST", body });
+export const changePassword = (data) => apiFetch("/users/me/password", { method: "PUT", body: data });

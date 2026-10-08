@@ -1,74 +1,40 @@
-import { defineStore } from "pinia";
-import * as api from "../api/aucationApi";
+import { apiFetch } from "../../../helpers/apiHelper";
 
-export const useAucationsStore = defineStore("aucations", {
-  state: () => ({
-    aucations: [],
-    aucation: null,
-    loading: false,
-  }),
+export const getAucations = (query = {}) => apiFetch("/aucations", { query });
+export const getAucation = (id) => apiFetch(`/aucations/${id}`);
 
-  actions: {
-    async fetchAucations(query = {}) {
-      this.loading = true;
+export const addAucation = (data) => {
+  const form = new FormData();
+  if (data.cover) form.append("cover", data.cover);
+  form.append("title", data.title || "");
+  form.append("description", data.description || "");
+  form.append("start_bid", String(data.start_bid ?? ""));
+  form.append("closed_at", data.closed_at || "");
+  return apiFetch("/aucations", { method: "POST", body: form });
+};
 
-      try {
-        const response = await api.getAucations(query);
+export const updateAucation = (id, data) => {
+  const form = new URLSearchParams();
+  form.set("title", data.title || "");
+  form.set("description", data.description || "");
+  form.set("start_bid", String(data.start_bid ?? ""));
+  form.set("closed_at", data.closed_at || "");
+  return apiFetch(`/aucations/${id}`, { method: "PUT", body: form });
+};
 
-        this.aucations =
-          response.data?.aucations ||
-          response.aucations ||
-          [];
-        
-        return response;
-      } finally {
-        this.loading = false;
-      }
-    },
+export const uploadCover = (id, cover) => {
+  const form = new FormData();
+  form.append("cover", cover);
+  return apiFetch(`/aucations/${id}/cover`, { method: "POST", body: form });
+};
 
-    async fetchAucation(id) {
-      this.loading = true;
+export const deleteAucation = (id) => apiFetch(`/aucations/${id}`, { method: "DELETE" });
 
-      try {
-        const response = await api.getAucation(id);
+export const addBid = (id, data) => {
+  const form = new URLSearchParams();
+  form.set("bid", String(data.bid ?? ""));
+  return apiFetch(`/aucations/${id}/bids`, { method: "POST", body: form });
+};
 
-        this.aucation =
-          response.data?.aucation ||
-          response.aucation ||
-          null;
-
-        return response;
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    async addAucation(data) {
-      return api.addAucation(data);
-    },
-
-    async updateAucation(id, data) {
-      return api.updateAucation(id, data);
-    },
-
-    async uploadCover(id, data) {
-      return api.uploadCover(id, data);
-    },
-
-    async deleteAucation(id) {
-      return api.deleteAucation(id);
-    },
-
-    async addBid(id, data) {
-      return api.addBid(id, data);
-    },
-
-    async deleteBid(id) {
-      return api.deleteBid(id);
-    },
-
-    async deleteAll() {
-      return api.deleteAll();
-    },
-  },
-});
+export const deleteBid = (id) => apiFetch(`/aucations/${id}/bids`, { method: "DELETE" });
+export const deleteAll = () => apiFetch("/aucations", { method: "DELETE" });
