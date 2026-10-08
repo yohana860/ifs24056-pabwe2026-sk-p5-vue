@@ -1,32 +1,36 @@
-export const showSuccessDialog = async (title, text = "") => {
-  const Swal = (await import("sweetalert2")).default;
+export function formatRupiah(value) {
+  const number = Number(value) || 0;
 
-  return Swal.fire({
-    icon: "success",
-    title,
-    text,
-  });
-};
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(number);
+}
 
-export const showErrorDialog = async (title, text = "") => {
-  const Swal = (await import("sweetalert2")).default;
+export function formatDate(date) {
+  if (!date) return "-";
 
-  return Swal.fire({
-    icon: "error",
-    title,
-    text,
-  });
-};
+  const parsedDate = new Date(date);
 
-export const showConfirmDialog = async (title, text = "") => {
-  const Swal = (await import("sweetalert2")).default;
+  if (Number.isNaN(parsedDate.getTime())) {
+    return "-";
+  }
 
-  return Swal.fire({
-    icon: "warning",
-    title,
-    text,
-    showCancelButton: true,
-    confirmButtonText: "Ya",
-    cancelButtonText: "Batal",
-  });
-};
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(parsedDate);
+}
+
+export function showErrorDialog(message) {
+  alert(message || "Terjadi kesalahan.");
+}
+
+export function showSuccessDialog(message) {
+  alert(message || "Berhasil.");
+}
