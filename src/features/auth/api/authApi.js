@@ -1,1 +1,5 @@
-import { apiFetch } from "../../../helpers/apiHelper"; export const login=(data)=>apiFetch("/auth/login",{method:"POST",body:data}); export const register=(data)=>apiFetch("/auth/register",{method:"POST",body:data});
+import { apiFetch } from "../../../helpers/apiHelper";
+
+export const login = (data) => apiFetch("/auth/login", { method: "POST", body: data });
+export const register = (data) => apiFetch("/auth/register", { method: "POST", body: data });
+export const logout = () => apiFetch("/auth/logout", { method: "POST" });

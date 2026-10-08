@@ -15,11 +15,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50">
-    <header class="flex items-center justify-between border-b bg-white p-5">
-      <RouterLink to="/" class="font-bold">Delcom Auction</RouterLink>
-      <RouterLink to="/profile" class="text-sm font-medium">Profil Saya</RouterLink>
-    </header>
+  <div class="bg-slate-50">
 
     <main class="mx-auto max-w-6xl p-6">
       <h1 class="text-3xl font-bold">Pengguna</h1>

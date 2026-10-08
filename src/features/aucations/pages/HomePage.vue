@@ -110,6 +110,11 @@ function openDetail(id) {
   router.push(`/aucations/${id}`);
 }
 
+function toApiDate(date) {
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
 function openAddModal() {
   form.title = "";
   form.description = "";
@@ -182,7 +187,7 @@ async function submitAucation() {
       title: form.title,
       description: form.description,
       start_bid: Number(form.start_bid),
-      closed_at: closedDate.toISOString(),
+      closed_at: toApiDate(closedDate),
       cover: form.cover,
     });
 
@@ -214,7 +219,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50">
+  <div class="bg-slate-50">
     <!-- Header -->
     <header class="border-b bg-white">
       <div
@@ -231,19 +236,6 @@ onMounted(async () => {
         </div>
 
         <div class="flex gap-3">
-          <RouterLink
-            to="/users"
-            class="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-700"
-          >
-            Pengguna
-          </RouterLink>
-
-          <RouterLink
-            to="/profile"
-            class="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-700"
-          >
-            Profil
-          </RouterLink>
 
           <button
             type="button"

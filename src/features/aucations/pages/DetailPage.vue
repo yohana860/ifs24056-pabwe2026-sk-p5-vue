@@ -47,7 +47,7 @@ async function bid() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50">
+  <div class="bg-slate-50">
     <header class="border-b bg-white p-5">
       <div class="mx-auto max-w-5xl">
         <button @click="router.back()" class="font-semibold">← Kembali</button>
