@@ -29,6 +29,7 @@ const router = createRouter({
     {
       path: "/",
       component: AucationLayout,
+      meta: { requiresAuth: true },
       children: [
         { path: "", component: HomePage },
         { path: "aucations/:aucationId", component: DetailPage },
@@ -47,16 +48,15 @@ router.beforeEach((to) => {
   return true;
 });
 
+// Canonical dinamis: selalu menunjuk ke URL halaman yang sedang dibuka.
 router.afterEach((to) => {
-  const titles = {
-    "/": "Delcom Auction — Platform Lelang Online",
-    "/auth/login": "Masuk — Delcom Auction",
-    "/auth/register": "Daftar — Delcom Auction",
-    "/users": "Pengguna — Delcom Auction",
-    "/profile": "Profil Saya — Delcom Auction",
-  };
-
-  document.title = titles[to.path] || "Delcom Auction — Platform Lelang Online";
+  let link = document.querySelector('link[rel="canonical"]');
+  if (!link) {
+    link = document.createElement("link");
+    link.setAttribute("rel", "canonical");
+    document.head.appendChild(link);
+  }
+  link.setAttribute("href", `${window.location.origin}${to.path}`);
 });
 
 export default router;
