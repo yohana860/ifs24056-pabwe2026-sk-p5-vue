@@ -21,8 +21,6 @@ const form = reactive({
 });
 
 function mediaUrl(url) {
-  if (!url) return "";
-
   return url
     .replace("http://127.0.0.1:8000", "https://open-api.delcom.org")
     .replace("http://localhost:8000", "https://open-api.delcom.org");
@@ -46,39 +44,19 @@ function formatDate(value) {
 }
 
 function highestBid(aucation) {
-  const bids = Array.isArray(aucation?.bids)
-    ? aucation.bids
-    : [];
+  const bids = (aucation.bids || []).map((item) => Number(item.bid || 0));
 
-  if (!bids.length) {
-    return Number(aucation?.start_bid || 0);
-  }
-
-  return Math.max(
-    Number(aucation?.start_bid || 0),
-    ...bids.map((bid) => Number(bid?.bid || bid?.amount || 0))
-  );
+  return Math.max(Number(aucation.start_bid || 0), ...bids);
 }
 
 function isClosed(aucation) {
-  if (!aucation?.closed_at) return false;
+  if (!aucation.closed_at) return false;
 
   return new Date(aucation.closed_at).getTime() <= Date.now();
 }
 
 const filteredAucations = computed(() => {
   let result = [...store.aucations];
-
-  if (filter.value === "mine") {
-    const currentUserId =
-      store.aucations.find((item) => item.user_id)?.user_id;
-
-    if (currentUserId) {
-      result = result.filter(
-        (item) => item.user_id === currentUserId
-      );
-    }
-  }
 
   if (filter.value === "open") {
     result = result.filter((item) => !isClosed(item));
@@ -91,20 +69,28 @@ const filteredAucations = computed(() => {
   const keyword = search.value.trim().toLowerCase();
 
   if (keyword) {
-    result = result.filter((item) => {
-      return (
-        String(item.title || "")
-          .toLowerCase()
-          .includes(keyword) ||
-        String(item.description || "")
-          .toLowerCase()
-          .includes(keyword)
-      );
-    });
+    result = result.filter(
+      (item) =>
+        String(item.title || "").toLowerCase().includes(keyword) ||
+        String(item.description || "").toLowerCase().includes(keyword)
+    );
   }
 
   return result;
 });
+
+async function loadAucations() {
+  try {
+    await store.fetchAucations(filter.value === "mine" ? { is_me: 1 } : {});
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function setFilter(value) {
+  filter.value = value;
+  await loadAucations();
+}
 
 function openDetail(id) {
   router.push(`/aucations/${id}`);
@@ -137,47 +123,29 @@ function handleCover(event) {
 
 async function submitAucation() {
   if (!form.title.trim()) {
-    return showErrorDialog(
-      "Validasi",
-      "Judul lelang wajib diisi."
-    );
+    return showErrorDialog("Validasi", "Judul lelang wajib diisi.");
   }
 
   if (!form.description.trim()) {
-    return showErrorDialog(
-      "Validasi",
-      "Deskripsi lelang wajib diisi."
-    );
+    return showErrorDialog("Validasi", "Deskripsi lelang wajib diisi.");
   }
 
-  if (!form.start_bid || Number(form.start_bid) <= 0) {
-    return showErrorDialog(
-      "Validasi",
-      "Harga awal harus lebih dari 0."
-    );
+  if (!(Number(form.start_bid) > 0)) {
+    return showErrorDialog("Validasi", "Harga awal harus lebih dari 0.");
   }
 
   if (!form.closed_at) {
-    return showErrorDialog(
-      "Validasi",
-      "Batas waktu lelang wajib diisi."
-    );
+    return showErrorDialog("Validasi", "Batas waktu lelang wajib diisi.");
   }
 
   if (!form.cover) {
-    return showErrorDialog(
-      "Validasi",
-      "Cover barang wajib dipilih."
-    );
+    return showErrorDialog("Validasi", "Cover barang wajib dipilih.");
   }
 
   const closedDate = new Date(form.closed_at);
 
   if (closedDate.getTime() <= Date.now()) {
-    return showErrorDialog(
-      "Validasi",
-      "Batas waktu harus lebih dari waktu sekarang."
-    );
+    return showErrorDialog("Validasi", "Batas waktu harus lebih dari waktu sekarang.");
   }
 
   submitting.value = true;
@@ -193,29 +161,17 @@ async function submitAucation() {
 
     showAddModal.value = false;
 
-    await store.fetchAucations();
+    await loadAucations();
 
-    await showSuccessDialog(
-      "Berhasil",
-      "Lelang berhasil ditambahkan."
-    );
+    await showSuccessDialog("Berhasil", "Lelang berhasil ditambahkan.");
   } catch (error) {
-    showErrorDialog(
-      "Gagal menambahkan lelang",
-      error.message || "Terjadi kesalahan."
-    );
+    showErrorDialog("Gagal menambahkan lelang", error.message || "Terjadi kesalahan.");
   } finally {
     submitting.value = false;
   }
 }
 
-onMounted(async () => {
-  try {
-    await store.fetchAucations();
-  } catch (error) {
-    console.error(error);
-  }
-});
+onMounted(loadAucations);
 </script>
 
 <template>
@@ -280,18 +236,16 @@ onMounted(async () => {
           Semua Lelang
         </button>
 
-        <button
-          type="button"
-          class="rounded-xl px-4 py-2 font-semibold"
-          :class="
-            filter === 'mine'
-              ? 'bg-slate-900 text-white'
-              : 'bg-white text-slate-600 border'
-          "
-          @click="filter = 'mine'"
-        >
-          Lelang Saya
-        </button>
+
+<button
+  type="button"
+  class="rounded-xl px-4 py-2 font-semibold"
+  :class="filter === 'mine' ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 border'"
+  @click="setFilter('mine')"
+>
+  Lelang Saya
+</button>
+
 
         <button
           type="button"

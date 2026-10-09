@@ -1,40 +1,31 @@
-export function formatRupiah(value) {
-  const number = Number(value) || 0;
+import Swal from "sweetalert2";
 
-  return new Intl.NumberFormat("id-ID", {
+export const showSuccessDialog = (title = "Berhasil", text = "") =>
+  Swal.fire({ icon: "success", title, text });
+
+export const showErrorDialog = (title = "Gagal", text = "") =>
+  Swal.fire({ icon: "error", title, text });
+
+export const showConfirmDialog = async (title = "Konfirmasi", text = "") => {
+  const result = await Swal.fire({
+    icon: "warning",
+    title,
+    text,
+    showCancelButton: true,
+    confirmButtonText: "Ya",
+    cancelButtonText: "Batal",
+  });
+  return result.isConfirmed;
+};
+
+export const formatRupiah = (value) =>
+  new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
-    minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(number);
-}
+  }).format(Number(value) || 0);
 
-export function formatDate(date) {
-  if (!date) return "-";
-
-  const parsedDate = new Date(date);
-
-  if (Number.isNaN(parsedDate.getTime())) {
-    return "-";
-  }
-
-  return new Intl.DateTimeFormat("id-ID", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(parsedDate);
-}
-
-export function showErrorDialog(message) {
-  alert(message || "Terjadi kesalahan.");
-}
-
-export function showSuccessDialog(message) {
-  alert(message || "Berhasil.");
-}
-
-export function showConfirmDialog(message) {
-  return window.confirm(message || "Apakah Anda yakin?");
-}
+export const formatDate = (value) =>
+  value
+    ? new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value))
+    : "-";

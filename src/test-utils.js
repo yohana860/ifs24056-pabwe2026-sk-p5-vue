@@ -1,19 +1,26 @@
-import { mount } from "@vue/test-utils";
-import { createPinia } from "pinia";
+import { mount, flushPromises } from "@vue/test-utils";
+import { createPinia, setActivePinia } from "pinia";
 import { createRouter, createMemoryHistory } from "vue-router";
 
 export function createMockPinia() {
-  return createPinia();
+  const pinia = createPinia();
+  setActivePinia(pinia);
+  return pinia;
 }
 
-export function renderWithProviders(component, options = {}) {
+export async function renderWithProviders(component, { route = "/", routes, props, global = {} } = {}) {
   const pinia = createMockPinia();
   const router = createRouter({
     history: createMemoryHistory(),
-    routes: options.routes || [{ path: "/:pathMatch(.*)*", component: { template: "<div />" } }],
+    routes: routes || [{ path: "/:pathMatch(.*)*", component: { template: "<div />" } }],
   });
-  return mount(component, {
-    ...options,
-    global: { plugins: [pinia, router], ...(options.global || {}) },
+  router.push(route);
+  await router.isReady();
+
+  const wrapper = mount(component, {
+    props,
+    global: { plugins: [pinia, router], ...global },
   });
+  await flushPromises();
+  return { wrapper, router, pinia };
 }
