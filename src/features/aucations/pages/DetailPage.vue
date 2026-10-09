@@ -8,14 +8,14 @@ const route = useRoute();
 const router = useRouter();
 const store = useAucationsStore();
 
+// Hanya dipanggil saat cover ada (v-if di template), jadi url selalu terisi.
 function mediaUrl(url) {
-  if (!url) return "";
   return url.replace("http://127.0.0.1:8000", "https://open-api.delcom.org");
 }
 
 const highestBid = computed(() => {
   const start = Number(store.aucation?.start_bid || 0);
-  const bids = (store.aucation?.bids || []).map((bid) => Number(bid?.bid ?? bid ?? 0));
+  const bids = (store.aucation?.bids || []).map((bid) => Number(bid.bid ?? 0));
   return Math.max(start, ...bids);
 });
 

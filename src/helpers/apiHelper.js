@@ -1,7 +1,6 @@
-const BASE_URL =
-  typeof DELCOM_BASEURL !== "undefined"
-    ? DELCOM_BASEURL
-    : import.meta.env.VITE_DELCOM_BASEURL || "https://open-api.delcom.org/api/v1";
+// DELCOM_BASEURL diinjeksi oleh `define` di vite.config.js (berlaku untuk dev, build, dan vitest),
+// lengkap dengan fallback ke https://open-api.delcom.org/api/v1.
+const BASE_URL = DELCOM_BASEURL;
 
 // Token disimpan di beberapa key umum supaya kompatibel dengan tool pengujian/grader.
 export const TOKEN_KEYS = ["access_token", "accessToken", "token"];

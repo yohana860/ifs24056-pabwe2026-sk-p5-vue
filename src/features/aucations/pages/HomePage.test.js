@@ -76,6 +76,24 @@ describe("HomePage list", () => {
     expect(cards[2].text()).toContain("-");
   });
 
+  it("loads only the first cover eagerly and lazy-loads the rest", async () => {
+    api.getAucations.mockResolvedValue({
+      data: {
+        aucations: [
+          { id: 1, title: "A", cover: "http://localhost:8000/a.png", start_bid: 1 },
+          { id: 2, title: "B", cover: "http://localhost:8000/b.png", start_bid: 2 },
+        ],
+      },
+    });
+    const { wrapper } = await render();
+    const imgs = wrapper.findAll("article img");
+    expect(imgs).toHaveLength(2);
+    expect(imgs[0].attributes("loading")).toBe("eager");
+    expect(imgs[0].attributes("fetchpriority")).toBe("high");
+    expect(imgs[1].attributes("loading")).toBe("lazy");
+    expect(imgs[1].attributes("fetchpriority")).toBe("auto");
+  });
+
   it("shows loading state", async () => {
     api.getAucations.mockReturnValue(new Promise(() => {}));
     const { wrapper } = await render();
